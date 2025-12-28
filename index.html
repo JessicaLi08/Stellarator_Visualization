@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>stellarator visualization</title>
+</head>
+<body>
+  <h1>parameter inputs</h1>
+
+  <label>
+    n:
+    <input type="number" id="nInput" min="1" value="2" />
+  </label>
+
+  <label>
+    m:
+    <input type="number" id="mInput" min="1" value="2" />
+  </label>
+
+  <label>
+    nfp:
+    <input type="number" id="nfpInput" min="1" value="3" />
+  </label>
+
+  <button id="generateBtn">generate data tables</button>
+
+  <div id="tablesContainer"></div>
+
+  <script src="./src/main.js"></script>
+</body>
+</html>
