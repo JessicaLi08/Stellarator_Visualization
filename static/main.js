@@ -4,14 +4,29 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event
 
+import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+
 const nInput = document.getElementById("nInput");
 const mInput = document.getElementById("mInput");
 const nfpInput = document.getElementById("nfpInput");
 const generateBtn = document.getElementById("generateBtn");
+const generateModelBtn = document.getElementById("generateModelBtn");
 const tablesContainer = document.getElementById("tablesContainer");
 
+let currentModel = null;
+
+let rbc = [];
+let zbs = [];
 
 function createTable(name, data) {
+  const container = document.createElement("div");
+
+  const title = document.createElement("h2");
+  title.textContent = name;
+  container.appendChild(title);
+
   const table = document.createElement("table");
 
   const headerRow = document.createElement("tr");
@@ -33,21 +48,20 @@ function createTable(name, data) {
 
     for (let j = 0; j < data[i].length; j++) {
       const td = document.createElement("td");
-
       const slider = document.createElement("input");
       slider.type = "range";
       slider.min = "-10";
       slider.max = "2";
-      slider.step = "0.0001";
+      slider.step = "0.001";
       slider.value = data[i][j];
 
       const output = document.createElement("output");
-      output.textContent = Number(slider.value).toFixed(3);
+      output.textContent = Number(slider.value);
 
       slider.addEventListener("input", function (event) {
         const value = Number(event.target.value);
         data[i][j] = value;
-        output.textContent = value.toFixed(3);
+        output.textContent = value;
       });
 
       td.appendChild(slider);
@@ -58,23 +72,13 @@ function createTable(name, data) {
     table.appendChild(tr);
   }
 
-  const title = document.createElement("h2");
-  title.textContent = name;
-
-  const container = document.createElement("div");
-  container.appendChild(title);
   container.appendChild(table);
-
   return container;
 }
 
 generateBtn.addEventListener("click", function () {
   const n = Number(nInput.value);
   const m = Number(mInput.value);
-  const nfp = Number(nfpInput.value);
-
-  rbc = [];
-  zbs = [];
 
   for (let i = 0; i < n; i++) {
     rbc[i] = [];
@@ -85,8 +89,71 @@ generateBtn.addEventListener("click", function () {
       zbs[i][j] = 0;
     }
   }
-
   tablesContainer.innerHTML = "";
   tablesContainer.appendChild(createTable("RBC", rbc));
   tablesContainer.appendChild(createTable("ZBS", zbs));
 });
+
+// flask code done by chatgpt, i had no idea how to do this...
+function generateModel() {
+  console.log("Generate model clicked");
+
+  fetch("/draw_stel", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      nfp: Number(nfpInput.value),
+      rbc: rbc,
+      zbs: zbs
+    })
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Flask error");
+      }
+      return response.json();
+    })
+    .then(() => {
+      reloadModel();
+    })
+    .catch(err => {
+      console.error("Model generation failed:", err);
+    });
+}
+
+// https://threejs.org/docs/#Scene
+// https://www.youtube.com/watch?v=aOQuuotM-Ww (this helped out a lot!!)
+generateModelBtn.addEventListener("click", generateModel);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera();
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(600, 600);
+document.body.appendChild(renderer.domElement);
+const light = new THREE.AmbientLight('white');
+scene.add(light);
+const loader = new GLTFLoader();
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// chatgpt helped with the loader
+function reloadModel() {
+  scene.remove(currentModel);
+  loader.load(
+    "/static/stellarator.glb?t=" + Date.now(),
+    function(gltf) {
+      currentModel = gltf.scene;
+      scene.add(currentModel);
+      camera.position.set(0, 0, 30);
+      camera.lookAt(0, 0, 0);
+    }
+  );
+}
+
+reloadModel();
+
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();

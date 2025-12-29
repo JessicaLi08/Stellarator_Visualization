@@ -4,29 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>stellarator visualization</title>
+  <!--code in the line below is chatgpt-->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+    }
+  }
+</script>
 </head>
 <body>
   <h1>parameter inputs</h1>
-
   <label>
     n:
     <input type="number" id="nInput" min="1" value="2" />
   </label>
-
   <label>
     m:
     <input type="number" id="mInput" min="1" value="2" />
   </label>
-
   <label>
     nfp:
     <input type="number" id="nfpInput" min="1" value="3" />
   </label>
-
+  <br><br>
   <button id="generateBtn">generate data tables</button>
-
+  <button id="generateModelBtn">generate model</button>
   <div id="tablesContainer"></div>
-
-  <script src="./src/main.js"></script>
+  <hr>
+  <h2>visualization</h2>
+  <!--code in the line below is chatgpt-->
+  <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 </html>
