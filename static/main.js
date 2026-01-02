@@ -262,9 +262,21 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
   };
 });
 
+document.getElementById("parseVmecBtn").onclick = function() {
+  let text = document.getElementById("vmecInput").value;
+  let data = parseVmec(text);
+  rbc = data.rbc;
+  zbs = data.zbs;
+  document.getElementById("nfpInput").value = data.nfp;
+  showTables();
+};
+
 document.getElementById("generateBtn").onclick = function() {
   let n = Number(document.getElementById("nInput").value);
   let m = Number(document.getElementById("mInput").value);
+
+  rbc = {};
+  zbs = {};
   
   for (let i = 0; i < n; i++) {
     for (let j = 0; j < m; j++) {
