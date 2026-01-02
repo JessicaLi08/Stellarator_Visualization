@@ -29,10 +29,25 @@ def draw_stel(RBC, ZBS, NFP):
     #Z += ZBS[n,m]*np.sin(NFP*n*U + m*V)
     #R += RBC[n,m]*np.cos(NFP*n*U + m*V)
 
-    for n in range(len(RBC)):
-        for m in range(len(RBC[0])):
-            R += RBC[n][m] * np.cos(NFP*n*U + m*V)
-            Z += ZBS[n][m] * np.sin(NFP*n*U + m*V)
+    # simple version w/ 2d arrays
+    #for n in range(len(RBC)):
+        #for m in range(len(RBC[0])):
+            #R += RBC[n][m] * np.cos(NFP*n*U + m*V)
+            #Z += ZBS[n][m] * np.sin(NFP*n*U + m*V)
+
+    #changed back to dictionaries for parsing
+    for key in RBC:
+        n, m = key.split(',')
+        n = int(n)
+        m = int(m)
+        R += RBC[key] * np.cos(NFP*n*U + m*V)
+    
+    # go through zbs dictionary
+    for key in ZBS:
+        n, m = key.split(',')
+        n = int(n)
+        m = int(m)
+        Z += ZBS[key] * np.sin(NFP*n*U + m*V)
 
     X = R * np.cos(U)
     Y = R * np.sin(U)
