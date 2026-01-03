@@ -5,7 +5,9 @@ Interactive web application for visualizing Fourier modes of 3D stellarator conf
   1. Clone or download this repository
   2. Install Python dependencies:
        ```pip install flask pyvista numpy```
-  4. In your web browser, open the link that is by that command (e.g., http://127.0.0.1:5000)
+  3. Open a terminal in the project directory and run
+       ```python app.py```
+  4. In your web browser, open the link that is outputted by that command (e.g., http://127.0.0.1:5000)
 
 ##**Features:**
   ###1. Inputting Fourier mode parameters
@@ -22,5 +24,6 @@ Interactive web application for visualizing Fourier modes of 3D stellarator conf
   ###3. Generating the stellarator configuration
       • "generate plot" button updates the interactive stellarator model below with the corresponding RBC/ZBS values from the table
       • Zoom (pinch in/out with two fingers) and rotate (click and drag) functionalities
+      <img width="443" height="484" alt="Screenshot 2026-01-03 at 3 36 30 PM" src="https://github.com/user-attachments/assets/2be63f80-6da6-41c7-af63-713333a78d1b" />
 
 
