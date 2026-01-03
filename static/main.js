@@ -168,6 +168,26 @@ function parseVmec(text) {
   return { nfp: nfp, rbc: rbcData, zbs: zbsData };
 }
 
+function getColor(value) {
+  if (value === 0) return "rgb(255,255,255)";
+  
+  let sign = (value > 0);
+  let absValue = Math.abs(value);
+  
+  let logValue = Math.log10(absValue);
+  let logMax = Math.log10(15); 
+  let logMin = Math.log10(0.000001); 
+  
+  let normalized = (logValue - logMin) / (logMax - logMin);
+  let rgbval = 255 - Math.floor(normalized * 255);
+
+  if (sign) {
+    return `rgb(255, ${rgbval}, ${rgbval})`;
+  } else {
+    return `rgb(${rgbval}, ${rgbval}, 255)`;
+  }
+}
+
 function showTables() {
   let container = document.getElementById("tablesContainer");
   container.innerHTML = "";
@@ -186,12 +206,13 @@ function showTables() {
     
     let tr = document.createElement("tr");
     tr.innerHTML = `<td>${n}</td><td>${m}</td>`;
+    tr.style.backgroundColor = getColor(rbc[key]);
     
     let td = document.createElement("td");
     let slider = document.createElement("input");
     slider.type = "range";
-    slider.min = "-10";
-    slider.max = "2";
+    slider.min = "-15";
+    slider.max = "15";
     slider.step = "0.01";
     slider.value = rbc[key];
     
@@ -201,6 +222,7 @@ function showTables() {
     slider.oninput = function() {
       rbc[key] = Number(slider.value);
       output.textContent = slider.value;
+      tr.style.backgroundColor = getColor(rbc[key]);
     };
     
     td.appendChild(slider);
@@ -224,12 +246,13 @@ function showTables() {
     
     let tr = document.createElement("tr");
     tr.innerHTML = `<td>${n}</td><td>${m}</td>`;
+    tr.style.backgroundColor = getColor(zbs[key]);
     
     let td = document.createElement("td");
     let slider = document.createElement("input");
     slider.type = "range";
-    slider.min = "-10";
-    slider.max = "2";
+    slider.min = "-15";
+    slider.max = "15";
     slider.step = "0.01";
     slider.value = zbs[key];
     
@@ -239,6 +262,7 @@ function showTables() {
     slider.oninput = function() {
       zbs[key] = Number(slider.value);
       output.textContent = slider.value;
+      tr.style.backgroundColor = getColor(zbs[key]);
     };
     
     td.appendChild(slider);

@@ -12,6 +12,26 @@
     }
   }
 </script>
+<!--https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/gradient/linear-gradient-->
+<style>
+    .colorbar-gradient {
+      width: 600px;
+      height: 30px;
+      background: linear-gradient(
+        to right, 
+        rgb(0,0,255),
+        rgb(100,100,255), 
+        rgb(255,255,255), 
+        rgb(255, 100, 100), 
+        rgb(255,0,0));
+    }
+    .colorbar-labels {
+      width: 600px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+  </style>
 </head>
 <body>
   <h1>stellarator visualization</h1>
@@ -48,6 +68,23 @@
   <br><br>
   <button id="generateBtn">generate data tables</button>
   <button id="generateModelBtn">generate model</button>
+
+    <div class="colorbar">
+    <div class="colorbar-title">fourier mode amplitude (log scale)</div>
+    <div class="colorbar-gradient"></div>
+    <div class="colorbar-labels">
+      <span>-15</span>
+      <span>-1</span>
+      <span>-0.1</span>
+      <span>-0.001</span>
+      <span>0</span>
+      <span>0.001</span>
+      <span>0.1</span>
+      <span>1</span>
+      <span>15</span>
+    </div>
+  </div>
+
   <div id="tablesContainer"></div>
   <hr>
   <h2>visualization</h2>
