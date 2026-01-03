@@ -333,7 +333,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera();
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(600, 600);
-document.body.appendChild(renderer.domElement);
+document.getElementById('visualizationContainer').appendChild(renderer.domElement);
 const light = new THREE.AmbientLight('white');
 scene.add(light);
 const loader = new GLTFLoader();
