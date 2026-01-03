@@ -1,7 +1,7 @@
 # **Stellarator_Visualization**
 Interactive web application for visualizing Fourier modes of 3D stellarator configurations
 
-##**How to open the app:**##
+## **How to open the app:** ##
   1. Clone or download this repository
   2. Install Python dependencies:
        ```pip install flask pyvista numpy```
