@@ -11,9 +11,12 @@ Interactive web application for visualizing Fourier modes of 3D stellarator conf
 
 ## **Features:** ##
   ### 1. Inputting Fourier mode parameters ###
-      - Load a stellarator configuration with preset parameters -- W7-X, QA (reactorscale), QH (reactorscale)
-      - Directly copy and paste the entire text content of a VMEC file
-      - Input custom values -- number of field periods (nfp), number of toroidal coordinates (n), and number of poloidal coordinates (m)
+  • Load a stellarator configuration with preset parameters -- W7-X, QA (reactorscale), QH (reactorscale)
+  
+  • Directly copy and paste the entire text content of a VMEC file
+  
+  • Input custom values -- number of field periods (nfp), number of toroidal coordinates (n), and number of poloidal coordinates (m)
+  
   <img width="1077" height="447" alt="Screenshot 2026-01-03 at 3 13 26 PM" src="https://github.com/user-attachments/assets/b1a103c9-5af7-4a5b-ac35-c879137db8bc" />
       
   ### 2. Visualizing the RBC (R Boundary Cosine) and ZBS (Z Boundary Sine) values in a table ###
