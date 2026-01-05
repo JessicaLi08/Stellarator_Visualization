@@ -97,16 +97,6 @@
       width: 100%;
     }
     
-    .input-area {
-      width: 100%;
-      height: 200px;
-      padding: 12px;
-      border: 2px solid #cbd5e0;
-      border-radius: 8px;
-      resize: vertical;
-      text-align: left;
-    }
-    
     .custom-input {
       margin: 10px 0;
       padding: 10px;
@@ -116,16 +106,56 @@
       width: 100%;
     }
     
+    #vmecDropZone {
+      width: 100%;
+      height: 200px;
+      border: 2px dashed #cbd5e0;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    #vmecFileInput {
+      display: none;
+    }
+    
+    .drop-text {
+      font-size: 16px;
+      color: black;
+      font-weight: 600;
+    }
+    
     .colorbar {
       margin: 30px 0;
       width: 100%;
+    }
+    
+    .colorbar-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 15px;
     }
     
     .colorbar-title {
       font-weight: 700;
       font-size: 1.1em;
       color: black;
-      margin-bottom: 15px;
+    }
+    
+    #colormapSelect {
+      padding: 8px 12px;
+      border: 2px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
     }
     
     .colorbar-gradient {
@@ -216,9 +246,11 @@
         </div>
         
         <div class="column">
-          <div class="column-title">upload vmec</div>
-          <textarea id="vmecInput" class="input-area"></textarea>
-          <button id="parseVmecBtn" class="interactive-element">parse vmec</button>
+          <div class="column-title">upload vmec file</div>
+          <input type="file" id="vmecFileInput" accept=".txt,*" />
+          <div id="vmecDropZone">
+            <div class="drop-text">drop VMEC file here or click to browse</div>
+          </div>
         </div>
         
         <div class="column">
@@ -235,8 +267,16 @@
     <div class="section">
       
       <div class="colorbar">
-        <div class="colorbar-title">fourier mode amplitude (log scale)</div>
-        <div class="colorbar-gradient"></div>
+        <div class="colorbar-controls">
+          <div class="colorbar-title">fourier mode amplitude (log scale)</div>
+          <select id="colormapSelect">
+            <option value="bwr">bwr</option>
+            <option value="viridis">viridis</option>
+            <option value="plasma">plasma</option>
+            <option value="turbo">turbo</option>
+          </select>
+        </div>
+        <div class="colorbar-gradient" id="colorbarGradient"></div>
         <div class="colorbar-labels">
           <span>-15</span>
           <span>-1</span>

@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import draw_stel
 import json
-
-# !!flask logic done by chatgpt!!
+import matplotlib.pyplot as plt
+import numpy as np
 
 app = Flask(__name__)
 
@@ -10,18 +10,23 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/generate", methods=["POST"])
-def generate():
-    data = request.json
-
-    # save input JSON
-    with open("stellarator_input.json", "w") as f:
-        json.dump(data, f)
-
-    # run pyvista script
-    subprocess.run(["python", "draw_stel.py"], check=True)
-
-    return jsonify({"status": "ok"})
+@app.route("/get_colormaps", methods=["GET"])
+def get_colormaps():
+    colormaps = {}
+    cmap_names = ['bwr', 'viridis', 'plasma', 'turbo']
+    
+    for name in cmap_names:
+        cmap = plt.get_cmap(name)
+        # Sample 256 colors from the colormap
+        colors = []
+        for i in np.linspace(0, 1, 256):
+            rgba = cmap(i)
+            # Convert to 0-255 RGB
+            rgb = [int(rgba[0] * 255), int(rgba[1] * 255), int(rgba[2] * 255)]
+            colors.append(rgb)
+        colormaps[name] = colors
+    
+    return jsonify(colormaps)
 
 @app.route("/draw_stel", methods=["POST"])
 def draw_stel_route():
