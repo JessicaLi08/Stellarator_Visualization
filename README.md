@@ -37,4 +37,9 @@ Interactive web application for visualizing Fourier modes of 3D stellarator conf
   
   <img width="443" height="484" alt="Screenshot 2026-01-03 at 3 36 30 PM" src="https://github.com/user-attachments/assets/2be63f80-6da6-41c7-af63-713333a78d1b" />
 
+  ### 4. Visualizing the 2D (n,m) Fourier mode space ###
+  
+  <img width="1108" height="342" alt="Screenshot 2026-01-06 at 9 06 09 AM" src="https://github.com/user-attachments/assets/b87f0281-e849-4dd2-ad97-d4d561db4dfb" />
+
+
 
