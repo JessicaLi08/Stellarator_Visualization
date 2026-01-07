@@ -28,16 +28,16 @@ function parseVmec(text) {
   
   let rbcMatches = text.matchAll(/rbc\(\s*(-?\d+)\s*,\s*(\d+)\s*\)\s*=\s*([+-]?[\d.eE+-]+)/gi);
   for (let match of rbcMatches) {
-    let n = match[1];
-    let m = match[2];
+    let n = String(Number(match[1]));
+    let m = String(Number(match[2]));
     let val = Number(match[3]);
     rbcData[n + "," + m] = val;
   }
   
-  let zbsMatches = text.matchAll(/zbs\(\s*(-?\d+)\s*,\s*(\d+)\s*\)\s*=\s*([+-]?[\d.eE+-]+)/gi);
+  let zbsMatches = text.matchAll(/zbs\s*\(\s*(-?\d+)\s*,\s*(\d+)\s*\)\s*=\s*([+-]?[\d.eE+-]+)/gi);
   for (let match of zbsMatches) {
-    let n = match[1];
-    let m = match[2];
+    let n = String(Number(match[1]));
+    let m = String(Number(match[2]));
     let val = Number(match[3]);
     zbsData[n + "," + m] = val;
   }
@@ -126,6 +126,7 @@ function showTables() {
       rbc[key] = Number(slider.value);
       output.textContent = slider.value;
       tr.style.backgroundColor = getColor(rbc[key]);
+      show2DTables();
     };
     
     td.appendChild(slider);
@@ -166,6 +167,7 @@ function showTables() {
       zbs[key] = Number(slider.value);
       output.textContent = slider.value;
       tr.style.backgroundColor = getColor(zbs[key]);
+      show2DTables();
     };
     
     td.appendChild(slider);
@@ -176,9 +178,101 @@ function showTables() {
   
   zbsDiv.appendChild(zbsTable);
   container.appendChild(zbsDiv);
+  
+  show2DTables();
 }
 
-// async function made by claude
+function show2DTables() {
+  let container = document.getElementById("tables2DContainer");
+  container.innerHTML = "";
+  
+  let keys = Object.keys(rbc);
+  
+  let nValues = new Set();
+  let mValues = new Set();
+  
+  for (let key of keys) {
+    let parts = key.split(",");
+    nValues.add(Number(parts[0]));
+    mValues.add(Number(parts[1]));
+  }
+  
+  let nArray = Array.from(nValues).sort((a, b) => a - b);
+  let mArray = Array.from(mValues).sort((a, b) => a - b);
+  
+  let rbcDiv = document.createElement("div");
+  rbcDiv.innerHTML = "<h3>RBC</h3>";
+  let rbcTable = document.createElement("table");
+  rbcTable.className = "table-2d";
+  
+  let headerRow = document.createElement("tr");
+  headerRow.innerHTML = "<th>n\\m</th>";
+  for (let m of mArray) {
+    headerRow.innerHTML += `<th>${m}</th>`;
+  }
+  rbcTable.appendChild(headerRow);
+  
+  for (let n of nArray) {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<th>${n}</th>`;
+    
+    for (let m of mArray) {
+      let key = n + "," + m;
+      let td = document.createElement("td");
+      
+      if (rbc[key] !== undefined) {
+        td.style.backgroundColor = getColor(rbc[key]);
+        td.textContent = rbc[key].toFixed(3);
+      } else {
+        td.textContent = "-";
+      }
+      
+      tr.appendChild(td);
+    }
+    
+    rbcTable.appendChild(tr);
+  }
+  
+  rbcDiv.appendChild(rbcTable);
+  container.appendChild(rbcDiv);
+  
+  let zbsDiv = document.createElement("div");
+  zbsDiv.innerHTML = "<h3>ZBS</h3>";
+  let zbsTable = document.createElement("table");
+  zbsTable.className = "table-2d";
+  
+  headerRow = document.createElement("tr");
+  headerRow.innerHTML = "<th>n\\m</th>";
+  for (let m of mArray) {
+    headerRow.innerHTML += `<th>${m}</th>`;
+  }
+  zbsTable.appendChild(headerRow);
+  
+  for (let n of nArray) {
+    let tr = document.createElement("tr");
+    tr.innerHTML = `<th>${n}</th>`;
+    
+    for (let m of mArray) {
+      let key = n + "," + m;
+      let td = document.createElement("td");
+      
+      if (zbs[key] !== undefined) {
+        td.style.backgroundColor = getColor(zbs[key]);
+        td.textContent = zbs[key].toFixed(3);
+      } else {
+        td.textContent = "-";
+      }
+      
+      tr.appendChild(td);
+    }
+    
+    zbsTable.appendChild(tr);
+  }
+  
+  zbsDiv.appendChild(zbsTable);
+  container.appendChild(zbsDiv);
+}
+
 async function loadPreset(presetName) {
   const response = await fetch(presetFiles[presetName]);
   const text = await response.text();

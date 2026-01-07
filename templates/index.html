@@ -215,6 +215,34 @@
       gap: 20px;
     }
     
+    #tables2DContainer {
+      margin-top: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .table-2d {
+      border-collapse: collapse;
+      margin: 15px auto;
+      width: 100%;
+      font-size: 12px;
+    }
+    
+    .table-2d th {
+      background: #e2e8f0;
+      padding: 8px;
+      border: 1px solid #cbd5e0;
+      font-weight: 700;
+    }
+    
+    .table-2d td {
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      font-family: monospace;
+    }
+    
     .visualization-container {
       width: 100%;
       display: flex;
@@ -303,6 +331,12 @@
       <div class="visualization-container" id="visualizationContainer">
       </div>
     </div>
+    
+    <div class="section">
+      <div class="section-title">2d fourier mode visualization</div>
+      <div id="tables2DContainer"></div>
+    </div>
+    
   </div>
   
   <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
