@@ -222,7 +222,7 @@ function show2DTables() {
       
       if (rbc[key] !== undefined) {
         td.style.backgroundColor = getColor(rbc[key]);
-        td.textContent = rbc[key].toFixed(3);
+        td.textContent = rbc[key].toFixed(6);
       } else {
         td.textContent = "-";
       }
@@ -258,7 +258,7 @@ function show2DTables() {
       
       if (zbs[key] !== undefined) {
         td.style.backgroundColor = getColor(zbs[key]);
-        td.textContent = zbs[key].toFixed(3);
+        td.textContent = zbs[key].toFixed(6);
       } else {
         td.textContent = "-";
       }
