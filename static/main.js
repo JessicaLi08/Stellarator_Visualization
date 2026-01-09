@@ -4,20 +4,24 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event
 
+// import model visualization tools
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 import { OrbitControls } from "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 
+// declare variables so be updated
 let rbc = {};
 let zbs = {};
 let currentModel = null;
 
+// strings of file directories on the repo
 const presetFiles = {
   w7x: "/static/input.W7-X_without_coil_ripple_beta0p05_d23p4_tm",
   qa_reactorscale: "/static/input.LandremanPaul2021_QA_reactorscale_lowres",
   qh_reactorscale: "/static/input.LandremanPaul2021_QH_reactorScale_lowres"
 };
 
+// accepts the text content inside a vmec file, and extracts the nfp/rbc/zbs values to put them inside a dictionary
 function parseVmec(text) {
   let nfp = 1;
   let rbcData = {};
@@ -48,6 +52,7 @@ function parseVmec(text) {
 let currentColormap = 'bwr';
 let colormapData = {};
 
+// extract matplotlib preset colormaps; done by claude
 async function loadColormaps() {
   const response = await fetch('/get_colormaps');
   colormapData = await response.json();
@@ -60,37 +65,36 @@ function updateColorbarGradient() {
   gradient.style.background = `linear-gradient(to right, ${stops})`;
 }
 
+// assign color to each element of the table
 function getColor(value) {
   if (value === 0) return "rgb(255,255,255)";
   
-  let sign = (value > 0);
   let absValue = Math.abs(value);
   
   let logValue = Math.log10(absValue);
   let logMax = Math.log10(15); 
   let logMin = Math.log10(0.000001); 
   
+  // needs to be normalized to convert to rgb
   let normalized = (logValue - logMin) / (logMax - logMin);
   normalized = Math.max(0, Math.min(1, normalized));
   
   const colors = colormapData[currentColormap];
   const numColors = colors.length;
   
+  // get rgb values
   const index = normalized * (numColors - 1);
-  const lower = Math.floor(index);
-  const upper = Math.ceil(index);
-  const fraction = index - lower;
-  
-  const colorLower = colors[lower];
-  const colorUpper = colors[upper];
-  
-  const r = Math.round(colorLower[0] + (colorUpper[0] - colorLower[0]) * fraction);
-  const g = Math.round(colorLower[1] + (colorUpper[1] - colorLower[1]) * fraction);
-  const b = Math.round(colorLower[2] + (colorUpper[2] - colorLower[2]) * fraction);
+
+  const col = colors[Math.round(index)]
+  const r = Math.round(col[0])
+  const g = Math.round(col[1])
+  const b = Math.round(col[2])
   
   return `rgb(${r}, ${g}, ${b})`;
 }
 
+// showTables is for the table with sliders, show2DTables is for the 2d visualization table
+// when the table with slider is updated, it called show2DTables to also update its colors+values accordingly
 function showTables() {
   let container = document.getElementById("tablesContainer");
   container.innerHTML = "";
@@ -100,6 +104,7 @@ function showTables() {
   let rbcDiv = document.createElement("div");
   rbcDiv.innerHTML = "<h3>RBC</h3>";
   let rbcTable = document.createElement("table");
+  // table formatting by claude
   rbcTable.innerHTML = "<tr><th>n</th><th>m</th><th>value</th></tr>";
   
   for (let key of keys) {
@@ -109,11 +114,13 @@ function showTables() {
     
     let tr = document.createElement("tr");
     tr.innerHTML = `<td>${n}</td><td>${m}</td>`;
+    // makes the background of the (n,m) block of the table the rgb color from getColor
     tr.style.backgroundColor = getColor(rbc[key]);
     
     let td = document.createElement("td");
     let slider = document.createElement("input");
     slider.type = "range";
+    // maybe make range adjustable in the future
     slider.min = "-15";
     slider.max = "15";
     slider.step = "0.01";
@@ -122,6 +129,7 @@ function showTables() {
     let output = document.createElement("output");
     output.textContent = rbc[key];
     
+    // update block color and value when slider is adjusted
     slider.oninput = function() {
       rbc[key] = Number(slider.value);
       output.textContent = slider.value;
@@ -197,6 +205,7 @@ function show2DTables() {
     mValues.add(Number(parts[1]));
   }
   
+  // make nArray and mArray into something like [-5, -4, -3, -2, -1, 0, 1, 2] - in order, no repeats
   let nArray = Array.from(nValues).sort((a, b) => a - b);
   let mArray = Array.from(mValues).sort((a, b) => a - b);
   
@@ -220,6 +229,7 @@ function show2DTables() {
       let key = n + "," + m;
       let td = document.createElement("td");
       
+      // if that (n,m) has a value then make it appear in the table
       if (rbc[key] !== undefined) {
         td.style.backgroundColor = getColor(rbc[key]);
         td.textContent = rbc[key].toFixed(6);
@@ -273,20 +283,23 @@ function show2DTables() {
   container.appendChild(zbsDiv);
 }
 
+// async done by chatgpt
 async function loadPreset(presetName) {
-  const response = await fetch(presetFiles[presetName]);
+  const response = await fetch(presetFiles[presetName]); // get file URL from presets and fetch file from server
   const text = await response.text();
   loadVmecText(text);
 }
 
 function loadVmecText(text) {
   let data = parseVmec(text);
+  // update global variables
   rbc = data.rbc;
   zbs = data.zbs;
   document.getElementById("nfpInput").value = data.nfp;
   showTables();
 }
 
+// update colorbar when changed from the drop down
 document.getElementById("colormapSelect").addEventListener("change", function(e) {
   currentColormap = e.target.value;
   updateColorbarGradient();
@@ -334,6 +347,7 @@ dropZone.addEventListener("click", function() {
   document.getElementById("vmecFileInput").click();
 });
 
+// create custom table with custom n,m dimensions
 document.getElementById("generateBtn").onclick = function() {
   let n = Number(document.getElementById("nInput").value);
   let m = Number(document.getElementById("mInput").value);
