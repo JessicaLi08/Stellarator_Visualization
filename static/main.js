@@ -14,6 +14,15 @@ let rbc = {};
 let zbs = {};
 let currentModel = null;
 
+function toScientific(num) {
+  return num.toExponential(2);
+}
+
+function parseScientific(str) {
+  const num = parseFloat(str);
+  return num;
+}
+
 // strings of file directories on the repo
 const presetFiles = {
   w7x: "/static/input.W7-X_without_coil_ripple_beta0p05_d23p4_tm",
@@ -126,6 +135,11 @@ function showTables() {
     slider.step = "0.01";
     slider.value = rbc[key];
     
+    let sciInput = document.createElement("input");
+    sciInput.type = "text";
+    sciInput.className = "sci-notation-input";
+    sciInput.value = toScientific(rbc[key]);
+    
     let output = document.createElement("output");
     output.textContent = rbc[key];
     
@@ -133,11 +147,30 @@ function showTables() {
     slider.oninput = function() {
       rbc[key] = Number(slider.value);
       output.textContent = slider.value;
+      sciInput.value = toScientific(rbc[key]);
       tr.style.backgroundColor = getColor(rbc[key]);
       show2DTables();
     };
     
+    sciInput.onchange = function() {
+      const value = parseScientific(sciInput.value);
+      rbc[key] = value;
+      slider.value = value;
+      output.textContent = value;
+      sciInput.value = toScientific(value);
+      tr.style.backgroundColor = getColor(rbc[key]);
+      show2DTables();
+    };
+    
+    sciInput.onkeydown = function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sciInput.blur();
+      }
+    };
+    
     td.appendChild(slider);
+    td.appendChild(sciInput);
     td.appendChild(output);
     tr.appendChild(td);
     rbcTable.appendChild(tr);
@@ -168,17 +201,41 @@ function showTables() {
     slider.step = "0.01";
     slider.value = zbs[key];
     
+    let sciInput = document.createElement("input");
+    sciInput.type = "text";
+    sciInput.className = "sci-notation-input";
+    sciInput.value = toScientific(zbs[key]);
+    
     let output = document.createElement("output");
     output.textContent = zbs[key];
     
     slider.oninput = function() {
       zbs[key] = Number(slider.value);
       output.textContent = slider.value;
+      sciInput.value = toScientific(zbs[key]);
       tr.style.backgroundColor = getColor(zbs[key]);
       show2DTables();
     };
     
+    sciInput.onchange = function() {
+      const value = parseScientific(sciInput.value);
+      zbs[key] = value;
+      slider.value = value;
+      output.textContent = value;
+      sciInput.value = toScientific(value);
+      tr.style.backgroundColor = getColor(zbs[key]);
+      show2DTables();
+    };
+    
+    sciInput.onkeydown = function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sciInput.blur();
+      }
+    };
+    
     td.appendChild(slider);
+    td.appendChild(sciInput);
     td.appendChild(output);
     tr.appendChild(td);
     zbsTable.appendChild(tr);
